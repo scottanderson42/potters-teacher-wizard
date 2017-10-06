@@ -4,7 +4,8 @@
   "description": "",
   "main": "paths.js",
   "scripts": {
-    "webpack": "webpack"
+    "webpack": "webpack",
+    "dev": "webpack-dev-server"
   },
   "keywords": [],
   "author": "",

@@ -1,4 +1,4 @@
-.content {
+.dashboard-content__component {
     background-color: #222;
     flex: 1 0 auto;
     font-size: 40px;
@@ -23,6 +23,7 @@
         font-size: 24px;
         color: #535353;
         text-align: center;
+        width: 350px;
 
         &:focus {
             outline-color: #1e1e1e;

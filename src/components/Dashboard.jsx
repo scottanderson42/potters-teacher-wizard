@@ -8,7 +8,7 @@ import './Dashboard.scss';
 
 function Dashboard() {
   return (
-    <div className="site-wrapper">
+    <div className="dashboard__page">
       <Header />
       <DashboardContent />
       <Footer />

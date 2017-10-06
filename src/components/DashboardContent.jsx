@@ -7,7 +7,7 @@ class DashboardContent extends React.Component {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.state = {
-      input: 'POTTER TEACHER WIZARD!',
+      input: 'POTTER TEACHER WIZZARD!',
     };
   }
   handleInputChange(e) {
@@ -15,7 +15,7 @@ class DashboardContent extends React.Component {
   }
   render() {
     return (
-      <div className="content">
+      <div className="dashboard-content__component">
         <input
           type="text"
           value={this.state.input}
