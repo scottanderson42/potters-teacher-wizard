@@ -1,9 +1,14 @@
 # MAGICAL POTTER TEACHER WIZZARD!
 
-## Installation
+## Installation and Use
 1. `npm install`
 2. `npm run dev`
-3. Open [localhost:8080](http://localhost:8080) in your favorite browsing-type Intarweb navigation application.
+3. Open [localhost:8080](http://localhost:8080) in your favorite browsing-type Intarweb
+   navigation application.
+
+## Production Build
+1. `npm run prod`
+2. Magical code is in the `/dist` directory now, by magic!
 
 ## Notes
 
@@ -12,5 +17,4 @@ into new thingies in the browsing-type Intarweb navigation application.
 
 ## Attribution
 
-Build system adapted from [http://kloc.io/setting-up-react-workflow-babel-webpack/](Setting Up
-A React Workflow with Babel and Webpack 2) by Daniel Reinoso.
+Build system adapted from [Setting Up A React Workflow with Babel and Webpack 2](http://kloc.io/setting-up-react-workflow-babel-webpack/) by Daniel Reinoso.

@@ -5,7 +5,8 @@
   "main": "paths.js",
   "scripts": {
     "webpack": "webpack",
-    "dev": "webpack-dev-server"
+    "dev": "webpack-dev-server --env.dev",
+    "prod": "webpack -p --env.prod"
   },
   "keywords": [],
   "author": "",
