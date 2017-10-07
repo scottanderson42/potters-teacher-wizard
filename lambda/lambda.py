@@ -1,11 +1,15 @@
 from __future__ import unicode_literals
 
 import boto3
+import botocore
+import calendar
+import copy
 import datetime
 import json
+import uuid
 
-WIZZARD_DESMESNE = 'potters_teacher_wizard'
-WIZZARD_LOG = 'points_log'
+WIZZARD_POINTS_DESMESNE = 'potters_teacher_wizard'
+WIZZARD_LOG_DESMESNE = 'points_log'
 WIZZARD_HOUSES = [
     'gryffindor',
     'hufflepuff',
@@ -29,7 +33,7 @@ def get_points(event, context):
 
     # Insert the week into the where clause if we are still in progress, otherwise just grab all the records.
     where_clause = 'where itemName() <= "{}"'.format(current_week) if current_week else ''
-    query = 'select * from {domain} {where} order by itemName() desc'.format(domain=WIZZARD_DESMESNE, where=where_clause)
+    query = 'select * from {domain} {where} order by itemName() desc'.format(domain=WIZZARD_POINTS_DESMESNE, where=where_clause)
 
     print 'QUERY', query
     response = client.select(
@@ -39,7 +43,7 @@ def get_points(event, context):
     print 'QUERY RESULTS', response
 
     for record in response.get('Items'):
-        item = _convert_garbage_boto3_item_to_useful_dict(record)
+        item = _convert_garbage_boto3_to_useful_dict(record)
         week_data[record['Name']] = item
         print 'ITEM', item
         for house in WIZZARD_HOUSES:
@@ -55,12 +59,128 @@ def get_points(event, context):
 
 
 def add_points(event, context):
+    """
+    Add points to a house for the current week, and log that points were added.
+
+    Input format:
+        {
+          "body": "{\"house\": \"gryffindor\",\"points\": 50,\"reason\": \"For the awesome\"}"
+        }
+    Note that the API gateway will automatically JSON-ize the body.
+    """
     print 'EVENT', event
+
+    client = boto3.client('sdb')
+
     current_week = _get_current_week()
     if not current_week:
-        return {
-            'error': 'The House Cup is not currently running.'
+        return _create_proxy_error_response('The House Cup is not currently running.')
+
+    # Get the request attributes.
+    body_text = event['body']
+    print 'BODY TEXT', body_text
+    body = json.loads(body_text)
+    print 'BODY', body
+
+    house = body['house'].lower()
+    if house not in WIZZARD_HOUSES:
+        return _create_proxy_error_response('Invalid house name: {}'.format(house))
+
+    points = body['points']
+    reason = body.get('reason', 'No reason supplied.')
+
+    # Log the points for tracking.
+    log = copy.deepcopy(body)
+    log['points'] = log['points']
+    log['timestamp'] = calendar.timegm(datetime.datetime.now().timetuple())
+    log_id = str(uuid.uuid4())
+
+    # Convert our wonderful, useful dict back into a boto3 format.
+    log_record = _convert_useful_dict_to_garbage_boto3(log, should_replace=False)
+    log_record.update({
+        'DomainName': WIZZARD_LOG_DESMESNE,
+        'ItemName': log_id,
+    })
+    response = client.put_attributes(**log_record)
+    print 'LOG RESPONSE', response
+
+    was_successful = False
+    retry_count = 5
+    while not was_successful and retry_count > 0:
+        was_successful = _increment_points(client, current_week, house, points)
+        print '    WAS SUCCESSFUL', was_successful, 'POINTS', points, 'RETRY', retry_count
+        retry_count -= 1
+
+    print 'INCREMENT SUCCESSFUL', was_successful
+    if not was_successful:
+        return _create_proxy_error_response('Points were logged but not added to the total.')
+
+    return _create_proxy_response({
+        'points': points,
+        'house': house,
+        'reason': reason,
+    })
+
+
+def _increment_points(client, current_week, house, points):
+    """
+    Perform an optimistic increment of the house points. If the current value
+    of the points has been changed between the read and the write, this will
+    fail and need to be retried.
+    """
+
+    # Get the current number of points for the house in question from the DB.
+    points_item = _convert_garbage_boto3_to_useful_dict(client.get_attributes(
+        DomainName=WIZZARD_POINTS_DESMESNE,
+        ItemName=current_week,
+        AttributeNames=[house],
+        ConsistentRead=True,
+    ))
+    # Save the current points as we'll need them to do a consistent write.
+    previous_points = points_item[house]
+    print 'PREVIOUS_POINTS', previous_points
+    # All SimpleDB values are strings, so convert it before incrementing.
+    points_item[house] = int(previous_points) + points
+    print 'NEW_POINTS', points_item[house]
+    # Convert our wonderful, useful dict back into a boto3 format.
+    points_record = _convert_useful_dict_to_garbage_boto3(points_item, should_replace=True)
+    points_record.update({
+        'DomainName': WIZZARD_POINTS_DESMESNE,
+        'ItemName': current_week,
+        'Expected': {
+            'Name': house,
+            'Value': previous_points,
+            # This will cause the update to fail if someone else has changed the point value in between.
+            'Exists': True,
         }
+    })
+    try:
+        response = client.put_attributes(**points_record)
+        return response.get('ResponseMetadata', {}).get('HTTPStatusCode') == 200
+    except botocore.exceptions.ClientError as e:
+        print 'ClientError', e, e.response
+        # Check failed means the value changed while we were updating it.
+        if e.response.get('Error', {}).get('Code') == 'ConditionalCheckFailed':
+            return False
+        # Otherwise it's just an error so raise it again.
+        raise e
+
+
+def get_logs(event, context):
+    client = boto3.client('sdb')
+
+    # 'where timestamp > 0' is necessary to include a sort clause with SimpleDB. The
+    # sort predicate must be included in the where clause in some fashion.
+    query = 'select * from {domain} where timestamp is not null order by timestamp desc'.format(domain=WIZZARD_LOG_DESMESNE)
+
+    print 'QUERY', query
+    response = client.select(
+        SelectExpression=query,
+        ConsistentRead=True,
+    )
+    print 'QUERY RESULTS', response
+
+    return _create_proxy_response([_convert_garbage_boto3_to_useful_dict(record) for record in response.get('Items')])
 
 
 def create_domains(event, context):
@@ -71,21 +191,21 @@ def create_domains(event, context):
     """
     client = boto3.client('sdb')
     response = client.create_domain(
-        DomainName=WIZZARD_DESMESNE,
+        DomainName=WIZZARD_POINTS_DESMESNE,
     )
     print 'POINTS CREATE RESPONSE', response
 
     response = client.delete_domain(
-        DomainName=WIZZARD_LOG,
+        DomainName=WIZZARD_LOG_DESMESNE,
     )
     response = client.create_domain(
-        DomainName=WIZZARD_LOG,
+        DomainName=WIZZARD_LOG_DESMESNE,
     )
     print 'LOG CREATE RESPONSE', response
 
     # Wow, this is a garbage syntax. Thanks, Amazon Boto3!
     items = [
-        _convert_useful_dict_to_garbage_boto3_item(
+        _convert_useful_dict_to_garbage_boto3(
             {house: '0' for house in WIZZARD_HOUSES},
             item_name=week,
             should_replace=True)
@@ -94,14 +214,14 @@ def create_domains(event, context):
     print 'ITEMS', items
 
     response = client.batch_put_attributes(
-        DomainName=WIZZARD_DESMESNE,
+        DomainName=WIZZARD_POINTS_DESMESNE,
         Items=items,
     )
     print 'PUT RESPONSE', response
 
     # For posterity's sake, here's what the above would look like in boto:
     # boto_client = boto.sdb.connect_to_region('us-east-1')
-    # domain = boto_client.create_domain(WIZZARD_DESMESNE)
+    # domain = boto_client.create_domain(WIZZARD_POINTS_DESMESNE)
     # response = domain.batch_put_attributes(
     #     {
     #         week: {
@@ -134,7 +254,14 @@ def _create_proxy_response(body, status_code=200):
     }
 
 
-def _convert_garbage_boto3_item_to_useful_dict(garbage):
+def _create_proxy_error_response(error_message, status_code=400):
+    return _create_proxy_response(
+        body={'errorMessage': error_message},
+        status_code=status_code,
+    )
+
+
+def _convert_garbage_boto3_to_useful_dict(garbage):
     """
     Converts boto3's ridiculous list of dicts with Name and Value attributes into
     a dictionary.
@@ -145,7 +272,7 @@ def _convert_garbage_boto3_item_to_useful_dict(garbage):
     return item
 
 
-def _convert_useful_dict_to_garbage_boto3_item(item, item_name=None, should_replace=True):
+def _convert_useful_dict_to_garbage_boto3(item, item_name=None, should_replace=True):
     """
     Converts a dictionary into boto3's ridiculous list of dicts with Name and Value attributes.
     """
@@ -153,7 +280,7 @@ def _convert_useful_dict_to_garbage_boto3_item(item, item_name=None, should_repl
         'Attributes': [
             {
                 'Name': attribute,
-                'Value': value,
+                'Value': str(value),
                 'Replace': should_replace,
             } for (attribute, value) in item.iteritems()
         ]
