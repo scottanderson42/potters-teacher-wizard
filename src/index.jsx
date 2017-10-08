@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
-import Dashboard from './components/Dashboard.jsx';
+import Page from './components/Page.jsx';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.scss';
@@ -10,7 +10,7 @@ import './index.scss';
 function renderApp() {
   ReactDOM.render(
     <AppContainer>
-      <Dashboard />
+      <Page />
     </AppContainer>,
     document.getElementById('main')
   );
@@ -19,5 +19,5 @@ function renderApp() {
 renderApp();
 
 if (module.hot) {
-  module.hot.accept('./components/Dashboard.jsx', renderApp);
+  module.hot.accept('./Page.jsx', renderApp);
 }

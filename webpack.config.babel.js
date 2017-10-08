@@ -65,6 +65,10 @@ export default (env=defaultEnv) => ({
         })
       },
       {
+        test: /\.png$/,
+        loader: "url-loader?mimetype=image/png"
+      },
+      {
         test: /\.woff(2)?(\?v=\d+\.\d+\.\d+)?$/,
         loader: "url-loader?limit=10000&mimetype=application/font-woff"
       },

@@ -1,21 +1,25 @@
 import React from 'react';
 
-import './DashboardContent.scss';
+import './DumbledoreContent.scss';
 
-class DashboardContent extends React.Component {
+class DumbledoreContent extends React.Component {
   constructor(props) {
     super(props);
+
     this.handleInputChange = this.handleInputChange.bind(this);
+
     this.state = {
       input: 'POTTER TEACHER WIZZARD!',
     };
   }
+
   handleInputChange(e) {
     this.setState({ input: e.target.value });
   }
+
   render() {
     return (
-      <div className="dashboard-content__component">
+      <div className="dumbledore-content__component">
         <input
           type="text"
           value={this.state.input}
@@ -27,4 +31,4 @@ class DashboardContent extends React.Component {
   }
 }
 
-export default DashboardContent;
+export default DumbledoreContent;
