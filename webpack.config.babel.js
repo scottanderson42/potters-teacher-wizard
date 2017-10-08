@@ -66,6 +66,10 @@ export default (env=defaultEnv) => ({
         })
       },
       {
+        test: /\.mp3$/,
+        loader: "url-loader?mimetype=audio/mpeg"
+      },
+      {
         test: /\.png$/,
         loader: "url-loader?mimetype=image/png"
       },

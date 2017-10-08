@@ -2,6 +2,7 @@ import _ from 'lodash';
 import API from '../../api';
 import Faye from 'faye'
 import React from 'react';
+import ExpectoCaponigro from './ExpectoCaponigro';
 
 // Assets
 import './DashboardContent.scss';
@@ -45,6 +46,8 @@ class DashboardContent extends React.Component {
     const fanoutEndpoint = '//25943397.fanoutcdn.com/bayeux';
     this.fayeClient = new Faye.Client(fanoutEndpoint);
     this.fayeSubscription = this.fayeClient.subscribe('/ptw/add_points', this._remoteAddPoints.bind(this));
+
+    this.capo = new ExpectoCaponigro();
   }
 
   componentWillMount() {
@@ -54,6 +57,7 @@ class DashboardContent extends React.Component {
   _remoteAddPoints(jsonData) {
     const {house, points, reason} = JSON.parse(jsonData);
     console.log('ADD POINTS', house, points, reason);
+    this.capo.addPoints(house, points);
     this._getCurrentStandings();
   }
 
