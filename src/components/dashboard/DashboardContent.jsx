@@ -22,7 +22,7 @@ function HousePointsComponent(props) {
     <div className={className}>
       <div className="house-points--house-name">{props.houseName}</div>
       <div className="house-points--points">{props.points}</div>
-      <div className="house-points--crest"><img src={CREST_URLS[props.houseName]} /></div>
+      <div className="house-points--crest"><img onClick={props.onClickCrest} src={CREST_URLS[props.houseName]} /></div>
     </div>
   );
 }
@@ -84,6 +84,14 @@ class DashboardContent extends React.Component {
     return prospectives[0][0];
   }
 
+  _onClickCrest(house) {
+    const api = new API();
+    api.addPoints(house, 5, 'For craft.')
+       .then((results)=> {
+         console.log('ADD POINTS RESULTS', results);
+       })
+  }
+
   render() {
     const weekNumber = this.state.currentWeek ? this.state.currentWeek[4] : '...';
 
@@ -96,10 +104,26 @@ class DashboardContent extends React.Component {
           <div className="col-sm-12 dashboard-content--current-week-title">Week {weekNumber}</div>
         </div>
         <div className="row dashboard-content--current-week">
-          <HousePointsComponent houseName="gryffindor" points={this.state.points.gryffindor || '-'}/>
-          <HousePointsComponent houseName="hufflepuff" points={this.state.points.hufflepuff || '-'}/>
-          <HousePointsComponent houseName="ravenclaw" points={this.state.points.ravenclaw || '-'}/>
-          <HousePointsComponent houseName="slytherin" points={this.state.points.slytherin || '-'}/>
+          <HousePointsComponent
+              houseName="gryffindor"
+              points={this.state.points.gryffindor || '-'}
+              onClickCrest={this._onClickCrest.bind(null, 'gryffindor')}
+          />
+          <HousePointsComponent
+              houseName="hufflepuff"
+              points={this.state.points.hufflepuff || '-'}
+              onClickCrest={this._onClickCrest.bind(null, 'hufflepuff')}
+          />
+          <HousePointsComponent
+              houseName="ravenclaw"
+              points={this.state.points.ravenclaw || '-'}
+              onClickCrest={this._onClickCrest.bind(null, 'ravenclaw')}
+          />
+          <HousePointsComponent
+              houseName="slytherin"
+              points={this.state.points.slytherin || '-'}
+              onClickCrest={this._onClickCrest.bind(null, 'slytherin')}
+          />
         </div>
         <button className="dashboard-content--dumbledore-button" onClick={this.props.onClickDumbledore} title="BECOME DUMBLEDORE"></button>
       </div>
