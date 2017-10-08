@@ -1,7 +1,9 @@
-import API from '../../api';
 import _ from 'lodash';
+import API from '../../api';
+import Faye from 'faye'
 import React from 'react';
 
+// Assets
 import './DashboardContent.scss';
 import gryffindorCrest from '../../assets/gryffindor.png';
 import hufflepuffCrest from '../../assets/hufflepuff.png';
@@ -39,14 +41,25 @@ class DashboardContent extends React.Component {
       weekData: {},
       winningHouseName: '',
     };
+
+    const fanoutEndpoint = '//25943397.fanoutcdn.com/bayeux';
+    this.fayeClient = new Faye.Client(fanoutEndpoint);
+    this.fayeSubscription = this.fayeClient.subscribe('/ptw/add_points', this._remoteAddPoints.bind(this));
   }
 
   componentWillMount() {
     this._getCurrentStandings();
   }
 
+  _remoteAddPoints(jsonData) {
+    const {house, points, reason} = JSON.parse(jsonData);
+    console.log('ADD POINTS', house, points, reason);
+    this._getCurrentStandings();
+  }
+
   _getCurrentStandings() {
     const api = new API();
+    console.log('GETTING POINTS');
     api.getPoints()
        .then((results)=> {
          console.log('GET_POINTS', results);
@@ -88,7 +101,7 @@ class DashboardContent extends React.Component {
     const api = new API();
     api.addPoints(house, 5, 'For craft.')
        .then((results)=> {
-         console.log('ADD POINTS RESULTS', results);
+         console.log('CLICK CREST RESULTS', results);
        })
   }
 

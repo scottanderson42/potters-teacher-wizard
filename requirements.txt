@@ -1,0 +1,9 @@
+PyJWT==1.5.3
+certifi==2017.7.27.1
+chardet==3.0.4
+fanout==1.2.0
+idna==2.6
+pubcontrol==2.4.2
+requests==2.18.4
+urllib3==1.22
+wsgiref==0.1.2

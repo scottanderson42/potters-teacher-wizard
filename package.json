@@ -15,6 +15,7 @@
     "axios": "^0.16.2",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
+    "faye": "^1.2.4",
     "lodash": "^4.17.4",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",

@@ -6,6 +6,7 @@ import calendar
 import copy
 import datetime
 import json
+import os
 import uuid
 
 WIZZARD_POINTS_DESMESNE = 'potters_teacher_wizard'
@@ -110,6 +111,12 @@ def add_points(event, context):
         new_points = _increment_points(client, current_week, house, points)
         print '    NEW POINTS', new_points, 'RETRY', retry_count
         retry_count -= 1
+
+    _setup_fanout()
+    _publish_fanout('ptw/add_points', {
+        'house': house,
+        'points': points,
+    })
 
     print 'INCREMENT SUCCESSFUL', new_points
     if new_points is None:
@@ -297,3 +304,26 @@ def _convert_useful_dict_to_garbage_boto3(item, item_name=None, should_replace=T
         garbage['Name'] = item_name
 
     return garbage
+
+
+def _setup_fanout():
+    import fanout
+    # These are set in the environment of the Lambda function, so it's safe!
+    fanout.realm = os.environ['FANOUT_REALM_ID']
+    fanout.key = os.environ['FANOUT_REALM_KEY']
+    print 'SETUP FANOUT', fanout.realm
+
+
+def _publish_fanout(channel, message):
+    import fanout
+    if channel[0] == '/':
+        channel = channel[1:]
+    print 'FANOUT PUBLISH', channel, message
+    fanout.publish(channel, json.dumps(message), blocking=True, callback=lambda result, message: _fanout_callback(result, message, channel))
+
+
+def _fanout_callback(result, message, channel):
+    if result:
+        print '\tPublish successful on channel', channel
+    else:
+        print '\tPublish error on channel', channel, 'with message', message[:20]
