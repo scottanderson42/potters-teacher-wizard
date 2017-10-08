@@ -4,6 +4,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import Dashboard from './components/Dashboard.jsx';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.scss';
 
 function renderApp() {
