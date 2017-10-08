@@ -19,5 +19,5 @@ function renderApp() {
 renderApp();
 
 if (module.hot) {
-  module.hot.accept('./Page.jsx', renderApp);
+  module.hot.accept('./components/Page.jsx', renderApp);
 }

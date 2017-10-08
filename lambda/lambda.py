@@ -255,6 +255,9 @@ def _create_proxy_response(body, status_code=200):
         "isBase64Encoded": False,
         "statusCode": status_code,
         "body": json.dumps(body),
+        "headers": {
+            "Access-Control-Allow-Origin": "*"
+        }
     }
 
 

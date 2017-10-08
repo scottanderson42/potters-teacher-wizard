@@ -1,4 +1,5 @@
 import React from 'react';
+import API from '../../api';
 
 import './DashboardContent.scss';
 
@@ -9,6 +10,14 @@ class DashboardContent extends React.Component {
     this.state = {
       thing: 'POTTER TEACHER WIZZARD!',
     };
+  }
+
+  componentWillMount() {
+    const api = new API();
+    api.getPoints()
+       .then((results)=> {
+         console.log('POINTS', results)
+       });
   }
 
   render() {

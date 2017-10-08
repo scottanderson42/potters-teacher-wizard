@@ -20,8 +20,6 @@ class Page extends React.Component {
     this.setState({ isDumbledore: true });
   }
 
-
-
   render() {
     let content;
     if (this.state.isDumbledore) {
