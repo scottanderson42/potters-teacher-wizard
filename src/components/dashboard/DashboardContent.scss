@@ -73,13 +73,43 @@
 .-is-gryffindor-winning {
   .dashboard-content--current-week-title {
     color: #B90000;
-    text-shadow: 0px 0px 30px #E5AA0A;
+    text-shadow:
+     -1px -1px 0 #E5AA0A,
+      1px -1px 0 #E5AA0A,
+     -1px  1px 0 #E5AA0A,
+      1px  1px 0 #E5AA0A;
   }
 }
 
 .-is-hufflepuff-winning {
   .dashboard-content--current-week-title {
     color: #FCB600;
-    text-shadow: 0px 0px 30px #E0E0E0;
+    text-shadow:
+     -3px -3px 0 #000,
+      3px -3px 0 #000,
+     -3px  3px 0 #000,
+      3px  3px 0 #000;
+  }
+}
+
+.-is-ravenclaw-winning {
+  .dashboard-content--current-week-title {
+    color: #0063A7;
+    text-shadow:
+     -1px -1px 0 #C79A2B,
+      1px -1px 0 #C79A2B,
+     -1px  1px 0 #C79A2B,
+      1px  1px 0 #C79A2B;
+  }
+}
+
+.-is-slytherin-winning {
+  .dashboard-content--current-week-title {
+    color: #005606;
+    text-shadow:
+     -1px -1px 0 #989999,
+      1px -1px 0 #989999,
+     -1px  1px 0 #989999,
+      1px  1px 0 #989999;
   }
 }
