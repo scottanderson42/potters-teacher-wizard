@@ -104,19 +104,19 @@ def add_points(event, context):
     response = client.put_attributes(**log_record)
     print 'LOG RESPONSE', response
 
-    was_successful = False
+    new_points = None
     retry_count = 5
-    while not was_successful and retry_count > 0:
-        was_successful = _increment_points(client, current_week, house, points)
-        print '    WAS SUCCESSFUL', was_successful, 'POINTS', points, 'RETRY', retry_count
+    while new_points is None and retry_count > 0:
+        new_points = _increment_points(client, current_week, house, points)
+        print '    NEW POINTS', new_points, 'RETRY', retry_count
         retry_count -= 1
 
-    print 'INCREMENT SUCCESSFUL', was_successful
-    if not was_successful:
+    print 'INCREMENT SUCCESSFUL', new_points
+    if new_points is None:
         return _create_proxy_error_response('Points were logged but not added to the total.')
 
     return _create_proxy_response({
-        'points': points,
+        'points': new_points,
         'house': house,
         'reason': reason,
     })
@@ -140,8 +140,9 @@ def _increment_points(client, current_week, house, points):
     previous_points = points_item[house]
     print 'PREVIOUS_POINTS', previous_points
     # All SimpleDB values are strings, so convert it before incrementing.
-    points_item[house] = int(previous_points) + points
-    print 'NEW_POINTS', points_item[house]
+    current_points = int(previous_points) + points
+    points_item[house] = current_points
+    print 'NEW_POINTS', current_points
     # Convert our wonderful, useful dict back into a boto3 format.
     points_record = _convert_useful_dict_to_garbage_boto3(points_item, should_replace=True)
     points_record.update({
@@ -156,12 +157,15 @@ def _increment_points(client, current_week, house, points):
     })
     try:
         response = client.put_attributes(**points_record)
-        return response.get('ResponseMetadata', {}).get('HTTPStatusCode') == 200
+        if response.get('ResponseMetadata', {}).get('HTTPStatusCode') == 200:
+            return current_points
+        else:
+            return None
     except botocore.exceptions.ClientError as e:
         print 'ClientError', e, e.response
         # Check failed means the value changed while we were updating it.
         if e.response.get('Error', {}).get('Code') == 'ConditionalCheckFailed':
-            return False
+            return None
         # Otherwise it's just an error so raise it again.
         raise e
 
