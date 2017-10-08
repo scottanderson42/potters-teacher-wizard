@@ -35,6 +35,7 @@ export default (env=defaultEnv) => ({
         filename: 'index.html',
         template: path.join(__dirname, 'src/index.html'),
     }),
+    new ExtractTextPlugin("[name].css"),
   ],
 
   module: {
@@ -59,7 +60,7 @@ export default (env=defaultEnv) => ({
       },
       {
         test: /\.(css|scss|sass)$/,
-        loader: env.dev ? 'style-loader!css-loader!sass-loader' : ExtractTextPlugin.extract({
+        loader: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader!sass-loader'
         })

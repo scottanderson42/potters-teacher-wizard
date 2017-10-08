@@ -1,31 +1,85 @@
 .dashboard-content__component {
-    flex: 1 0 auto;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+  padding: 20px;
+  border-radius: 25px;
+
+  .dashboard-content--current-week-title {
+    color: white;
     font-size: 40px;
-    color: #fff;
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    font-weight: bold;
+    text-align: center;
+  }
 
-    span {
-        max-width: 50%;
-    }
+  .house-points__component {
+    text-align: center;
+  }
 
+  .house-points--house-name {
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    text-transform: capitalize;
+    width: 100%;
+  }
+
+  .-gryffindor {
+    text-shadow: 0px 0px 15px #B90000;
+  }
+
+  .-hufflepuff {
+    text-shadow: 0px 0px 15px #FCB600;
+  }
+
+  .-ravenclaw {
+    text-shadow: 0px 0px 15px #005387;
+  }
+
+  .-slytherin {
+    text-shadow: 0px 0px 15px #005606;
+  }
+
+  .house-points--points {
+    color: white;
+    font-size: 64px;
+    font-weight: bold;
+    width: 100%;
+  }
+
+  .house-points--crest {
+    width: 100%;
     img {
-        height: auto;
+      border-radius: 30px;
+      width: 100px;
+      height: 100px;
     }
+  }
 
-    input {
-        padding: 10px;
-        background-color: #2f2f2f;
-        border: none;
-        font-size: 24px;
-        color: #535353;
-        text-align: center;
-        width: 350px;
+  img {
+    height: auto;
+  }
 
-        &:focus {
-            outline-color: #1e1e1e;
-        }
-    }
+  .dashboard-content--dumbledore-button {
+    background-image: url("../../assets/potter_teacher_wizard.png");
+    background-size: 50px 50px;
+    height: 50px;
+    width: 50px;
+
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+.-is-gryffindor-winning {
+  .dashboard-content--current-week-title {
+    color: #B90000;
+    text-shadow: 0px 0px 30px #E5AA0A;
+  }
+}
+
+.-is-hufflepuff-winning {
+  .dashboard-content--current-week-title {
+    color: #FCB600;
+    text-shadow: 0px 0px 30px #E0E0E0;
+  }
 }

@@ -4,7 +4,6 @@ import { AppContainer } from 'react-hot-loader';
 
 import Page from './components/Page.jsx';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.scss';
 
 function renderApp() {
