@@ -1,0 +1,112 @@
+.dumbledore-point-form__component {
+    align-items: center;
+    color: $white;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 75%; 
+    text-shadow: 2px 2px 7px $dark-grey, 2px 2px 3px $light-grey;
+
+    h4 {
+        text-transform: uppercase;
+        width: 100%;
+    }
+
+    form {
+        text-align: center;
+        width: 100%;
+        
+        .crest {
+            cursor: pointer;
+            width: 100%;
+            img {
+                border-radius: 30px;
+                height: 100px;
+                opacity: 0.3;
+                width: 100px;
+            }    
+        }
+
+        .-is-selected {
+            img {
+                opacity: 1 !important;
+            }
+        }
+
+        .house-name {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: capitalize;
+            width: 100%;
+        }
+
+        .-gryffindor {
+            text-shadow: 0px 0px 15px $gryffindor-red;
+            
+        }
+        
+        .-hufflepuff {
+            text-shadow: 0px 0px 15px $hufflepuff-yellow;
+
+        }
+    
+        .-ravenclaw {
+            text-shadow: 0px 0px 15px $ravenclaw-blue;
+
+        }
+    
+        .-slytherin {
+            text-shadow: 0px 0px 15px $slytherin-green;
+
+        }
+
+        .form-field {
+            width: 100%;
+
+            input {
+                background-color: $white;
+                border: none;
+                color: $dark-grey;
+                cursor: pointer;
+                font-size: 24px;
+                height: $form-field-height;
+                margin: 10px 0;
+                opacity: 0.6;
+                padding: 10px;
+                text-align: center;
+                width: 100%;
+                
+                &:focus {
+                    outline-color: $active-color;
+                }
+            }
+        }
+        
+        .house-selection-button {
+            cursor: pointer;
+            &:active {
+                outline-color: $active-color;
+            }
+        }
+
+        .point-form__submit {
+            background-color: $white;
+            border: none;
+            color: $dark-grey;
+            cursor: pointer;
+            font-size: 24px;
+            max-width: 200px;
+            opacity: 0.6;
+            text-align: center;
+            width: 100%;
+
+            &:active {
+                background-color: $dark-grey;
+                color: $white;
+                outline-color: $active-color;
+            }
+        }
+    }
+}

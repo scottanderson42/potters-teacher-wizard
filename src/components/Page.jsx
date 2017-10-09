@@ -17,13 +17,13 @@ class Page extends React.Component {
   }
 
   handleDumbledore(e) {
-    this.setState({ isDumbledore: true });
+    this.setState({ isDumbledore: !this.state.isDumbledore });
   }
 
   render() {
     let content;
     if (this.state.isDumbledore) {
-      content = <DumbledoreContent />;
+      content = <DumbledoreContent onClickDumbledore={this.handleDumbledore} />;
     } else {
       content = <DashboardContent onClickDumbledore={this.handleDumbledore} />;
     }
