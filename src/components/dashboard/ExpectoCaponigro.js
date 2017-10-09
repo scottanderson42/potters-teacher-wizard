@@ -8,6 +8,8 @@ import SoundSlytherin from '../../assets/sounds/slytherin.mp3';
 
 import PointsAwarded from '../../assets/sounds/points_awarded.mp3';
 import PointsDeducted from '../../assets/sounds/points_deducted.mp3';
+import FromSound from '../../assets/sounds/from.mp3';
+import ToSound from '../../assets/sounds/to.mp3';
 
 import Points01 from '../../assets/sounds/points_01.mp3';
 import Points02 from '../../assets/sounds/points_02.mp3';
@@ -107,16 +109,25 @@ class ExpectoCaponigro {
       .then( ()=> {
         if (points >= 0) {
           return this._createChainableSound(PointsAwarded, 'points awarded');
+            // Commented out until we fix the 'to' sound.
+            // .then(()=> {
+            //   return this._createChainableSound(ToSound, 'to');
+            // });
         } else {
           return this._createChainableSound(PointsDeducted, 'points deducted');
+            // Commented out until we fix the 'from' sound.
+            // .then(()=> {
+            //   return this._createChainableSound(FromSound, 'from');
+            // });
         }
       })
       .then( ()=> {
         return this._createChainableSound(HOUSE_SOUNDS[house], house);
       })
-      // .then( ()=> {
-      //   return this._createChainableSound(Meow, 'meow');
-      // })
+      .then( ()=> {
+        // Pause between announcements.
+        return this._pause(500);
+      })
       .then( ()=> {
         console.log('END OF SOUNDS');
         this._serviceQueue();
@@ -216,6 +227,3 @@ class ExpectoCaponigro {
 }
 
 export default ExpectoCaponigro;
-
-
-
