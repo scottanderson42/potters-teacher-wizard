@@ -1,10 +1,14 @@
-.dashboard__page {
+@import '../breakpoints';
+
+body {
+  background-attachment: fixed;
+  background-size: cover;
   background-image: url("../assets/background.png");
 
-  min-height: 100%; /* Fallback for browsers do NOT support vh unit */
-  min-height: 100vh;
+  @include media-breakpoint-down('sm') {
+    background-position: center;
+  }
+}
 
-  display: flex;
-  align-items: center;
-
+.dashboard__page {
 }
