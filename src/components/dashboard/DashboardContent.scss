@@ -1,8 +1,24 @@
+@import '../../breakpoints';
+
 .dashboard-content__component {
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
   padding: 20px;
+  margin: 50px;
   border-radius: 25px;
 
+  .dashboard-content--dumbledore-button {
+    background-image: url("../../assets/potter_teacher_wizard.png");
+    background-size: 50px 50px;
+    height: 50px;
+    width: 50px;
+
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+}
+
+.points-group__component {
   .dashboard-content--current-week-title {
     color: white;
     font-size: 40px;
@@ -58,16 +74,10 @@
     height: auto;
   }
 
-  .dashboard-content--dumbledore-button {
-    background-image: url("../../assets/potter_teacher_wizard.png");
-    background-size: 50px 50px;
-    height: 50px;
-    width: 50px;
+}
 
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-  }
+.points-group__component:not(:last-child) {
+  margin-bottom: 20px;
 }
 
 .-is-gryffindor-winning {
