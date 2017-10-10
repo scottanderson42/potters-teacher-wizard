@@ -2,3 +2,5 @@
 attic
 dist
 node_modules
+.DS_Store
+all_lambda.zip

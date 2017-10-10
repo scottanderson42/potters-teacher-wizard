@@ -1,8 +1,24 @@
+@import '../../breakpoints';
+
 .dashboard-content__component {
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
   padding: 20px;
+  margin: 50px;
   border-radius: 25px;
 
+  .dashboard-content--dumbledore-button {
+    background-image: url("../../assets/potter_teacher_wizard.png");
+    background-size: 50px 50px;
+    height: 50px;
+    width: 50px;
+
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+}
+
+.points-group__component {
   .dashboard-content--current-week-title {
     color: white;
     font-size: 40px;
@@ -58,28 +74,52 @@
     height: auto;
   }
 
-  .dashboard-content--dumbledore-button {
-    background-image: url("../../assets/potter_teacher_wizard.png");
-    background-size: 50px 50px;
-    height: 50px;
-    width: 50px;
+}
 
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-  }
+.points-group__component:not(:last-child) {
+  margin-bottom: 20px;
 }
 
 .-is-gryffindor-winning {
   .dashboard-content--current-week-title {
     color: #B90000;
-    text-shadow: 0px 0px 30px #E5AA0A;
+    text-shadow:
+     -1px -1px 0 #E5AA0A,
+      1px -1px 0 #E5AA0A,
+     -1px  1px 0 #E5AA0A,
+      1px  1px 0 #E5AA0A;
   }
 }
 
 .-is-hufflepuff-winning {
   .dashboard-content--current-week-title {
     color: #FCB600;
-    text-shadow: 0px 0px 30px #E0E0E0;
+    text-shadow:
+     -3px -3px 0 #000,
+      3px -3px 0 #000,
+     -3px  3px 0 #000,
+      3px  3px 0 #000;
+  }
+}
+
+.-is-ravenclaw-winning {
+  .dashboard-content--current-week-title {
+    color: #0063A7;
+    text-shadow:
+     -1px -1px 0 #C79A2B,
+      1px -1px 0 #C79A2B,
+     -1px  1px 0 #C79A2B,
+      1px  1px 0 #C79A2B;
+  }
+}
+
+.-is-slytherin-winning {
+  .dashboard-content--current-week-title {
+    color: #005606;
+    text-shadow:
+     -1px -1px 0 #989999,
+      1px -1px 0 #989999,
+     -1px  1px 0 #989999,
+      1px  1px 0 #989999;
   }
 }

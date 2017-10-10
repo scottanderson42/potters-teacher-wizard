@@ -10,6 +10,11 @@
 1. `npm run prod`
 2. Magical code is in the `/dist` directory now, by magic!
 
+## Lambda Build
+1. `mkvirtualenv ptw`
+2. `pip install`
+3. `./scripts/make_lambda_zip.sh`
+
 ## Notes
 
 Edit the thingy files. Watch the code *MAGICALLY TRANSFORM* via Muggle-technology Polyjuice

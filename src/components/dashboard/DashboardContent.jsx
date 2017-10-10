@@ -1,7 +1,10 @@
-import API from '../../api';
 import _ from 'lodash';
+import API from '../../api';
+import Faye from 'faye'
 import React from 'react';
+import ExpectoCaponigro from './ExpectoCaponigro';
 
+// Assets
 import './DashboardContent.scss';
 import gryffindorCrest from '../../assets/gryffindor.png';
 import hufflepuffCrest from '../../assets/hufflepuff.png';
@@ -21,48 +24,13 @@ function HousePointsComponent(props) {
   return (
     <div className={className}>
       <div className="house-points--house-name">{props.houseName}</div>
+      <div className="house-points--crest"><img onClick={props.onClickCrest} src={CREST_URLS[props.houseName]} /></div>
       <div className="house-points--points">{props.points}</div>
-      <div className="house-points--crest"><img src={CREST_URLS[props.houseName]} /></div>
     </div>
   );
 }
 
-
-class DashboardContent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentWeek: null,
-      points: {},
-      totals: {},
-      weekData: {},
-      winningHouseName: '',
-    };
-  }
-
-  componentWillMount() {
-    this._getCurrentStandings();
-  }
-
-  _getCurrentStandings() {
-    const api = new API();
-    api.getPoints()
-       .then((results)=> {
-         console.log('GET_POINTS', results);
-
-         const currentPoints = results.week_data[results.current_week];
-
-         this.setState({
-           currentWeek: results.current_week,
-           points: currentPoints,
-           totals: results.totals,
-           weekData: results.week_data,
-           winningHouseName: this._getWinningHouseName(currentPoints),
-         });
-       });
-  }
-
+class PointsGroup extends React.Component {
   _getWinningHouseName(points) {
     // Turn the points into a list of tuples: [house, points]
     const prospectives = Object.entries(points);
@@ -84,23 +52,114 @@ class DashboardContent extends React.Component {
     return prospectives[0][0];
   }
 
-  render() {
-    const weekNumber = this.state.currentWeek ? this.state.currentWeek[4] : '...';
+  _onClickCrest(house) {
+    // const api = new API();
+    // api.addPoints(house, 5, 'For craft.')
+    //    .then((results)=> {
+    //      console.log('CLICK CREST RESULTS', results);
+    // })
+  }
 
-    const winnerClass = this.state.winningHouseName ? ` -is-${this.state.winningHouseName}-winning` : '';
-    let winningClassName = `dashboard-content__component container-fluid ${winnerClass}`;
+  render() {
+    console.log('POINTS', this.props.points);
+    const winningHouseName = this._getWinningHouseName(this.props.points);
+    const winnerClass = winningHouseName ? ` -is-${winningHouseName}-winning` : '';
+    const winningClassName = `points-group__component container-fluid ${winnerClass}`;
 
     return (
       <div className={winningClassName}>
         <div className="row">
-          <div className="col-sm-12 dashboard-content--current-week-title">Week {weekNumber}</div>
+          <div className="col-sm-12 dashboard-content--current-week-title">{this.props.title}</div>
         </div>
         <div className="row dashboard-content--current-week">
-          <HousePointsComponent houseName="gryffindor" points={this.state.points.gryffindor || '-'}/>
-          <HousePointsComponent houseName="hufflepuff" points={this.state.points.hufflepuff || '-'}/>
-          <HousePointsComponent houseName="ravenclaw" points={this.state.points.ravenclaw || '-'}/>
-          <HousePointsComponent houseName="slytherin" points={this.state.points.slytherin || '-'}/>
+          <HousePointsComponent
+              houseName="gryffindor"
+              points={this.props.points.gryffindor || '-'}
+              onClickCrest={this._onClickCrest.bind(null, 'gryffindor')}
+          />
+          <HousePointsComponent
+              houseName="hufflepuff"
+              points={this.props.points.hufflepuff || '-'}
+              onClickCrest={this._onClickCrest.bind(null, 'hufflepuff')}
+          />
+          <HousePointsComponent
+              houseName="ravenclaw"
+              points={this.props.points.ravenclaw || '-'}
+              onClickCrest={this._onClickCrest.bind(null, 'ravenclaw')}
+          />
+          <HousePointsComponent
+              houseName="slytherin"
+              points={this.props.points.slytherin || '-'}
+              onClickCrest={this._onClickCrest.bind(null, 'slytherin')}
+          />
         </div>
+      </div>
+    )
+  }
+}
+
+PointsGroup.defaultProps = {
+  points: {},
+  title: '',
+};
+
+
+class DashboardContent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentWeek: null,
+      points: {},
+      totals: {},
+      weekData: {},
+      winningHouseName: '',
+    };
+
+    const fanoutEndpoint = '//25943397.fanoutcdn.com/bayeux';
+    this.fayeClient = new Faye.Client(fanoutEndpoint);
+    this.fayeSubscription = this.fayeClient.subscribe('/ptw/add_points', this._remoteAddPoints.bind(this));
+
+    this.capo = new ExpectoCaponigro();
+  }
+
+  componentWillMount() {
+    this._getCurrentStandings();
+  }
+
+  _remoteAddPoints(jsonData) {
+    const {house, points, reason} = JSON.parse(jsonData);
+    console.log('ADD POINTS', house, points, reason);
+    this.capo.addPoints(house, points);
+    this._getCurrentStandings();
+  }
+
+  _getCurrentStandings() {
+    const api = new API();
+    console.log('GETTING POINTS');
+    api.getPoints()
+       .then((results)=> {
+         console.log('GET_POINTS', results);
+
+         const currentPoints = results.week_data[results.current_week];
+
+         this.setState({
+           currentWeek: results.current_week,
+           points: currentPoints,
+           totals: results.totals,
+           weekData: results.week_data,
+         });
+       });
+  }
+
+  render() {
+    // Extract the week number from the week name.
+    const weekNumber = this.state.currentWeek ? this.state.currentWeek[4] : '...';
+
+    return (
+      <div className="dashboard-content__component">
+        <PointsGroup title={`Week ${weekNumber}`} points={this.state.points} />
+        <PointsGroup title={`Totals`} points={this.state.totals} />
         <button className="dashboard-content--dumbledore-button" onClick={this.props.onClickDumbledore} title="BECOME DUMBLEDORE"></button>
       </div>
     );
