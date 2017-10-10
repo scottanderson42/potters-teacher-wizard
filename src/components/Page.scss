@@ -2,6 +2,7 @@
 
 body {
   background-attachment: fixed;
+  background-size: cover;
   background-image: url("../assets/background.png");
 
   @include media-breakpoint-down('sm') {
