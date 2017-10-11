@@ -67,27 +67,27 @@ export default (env=defaultEnv) => ({
       },
       {
         test: /\.mp3$/,
-        loader: "url-loader?mimetype=audio/mpeg"
+        loader: "file-loader?mimetype=audio/mpeg&outputPath=sounds/&name=[name].[ext]"
       },
       {
         test: /\.png$/,
-        loader: "url-loader?mimetype=image/png"
+        loader: "file-loader?mimetype=image/png&outputPath=images/&name=[name].[ext]"
       },
       {
         test: /\.woff(2)?(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=application/font-woff"
+        loader: "file-loader?limit=10000&mimetype=application/font-woff&outputPath=fonts/"
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=application/octet-stream"
+        loader: "file-loader?limit=10000&mimetype=application/octet-stream&outputPath=fonts/"
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "file-loader"
+        loader: "file-loader?outputPath=fonts/"
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: "url-loader?limit=10000&mimetype=image/svg+xml"
+        loader: "file-loader?limit=10000&mimetype=image/svg+xml&outputPath=images/"
       },
     ]
   },
