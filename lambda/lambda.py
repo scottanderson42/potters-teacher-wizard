@@ -217,10 +217,31 @@ def create_domains(event, context):
     # Wow, this is a garbage syntax. Thanks, Amazon Boto3!
     items = [
         _convert_useful_dict_to_garbage_boto3(
+            {
+                'gryffindor': 333,
+                'hufflepuff': 187,
+                'ravenclaw': 157,
+                'slytherin': 257,
+            },
+            item_name='week1',
+            should_replace=True),
+        _convert_useful_dict_to_garbage_boto3(
+            {
+                'gryffindor': 425 - 333,
+                'hufflepuff': 333 - 187,
+                'ravenclaw': 209 - 157,
+                'slytherin': 315 - 257,
+            },
+            item_name='week2',
+            should_replace=True),
+        _convert_useful_dict_to_garbage_boto3(
             {house: '0' for house in WIZZARD_HOUSES},
-            item_name=week,
-            should_replace=True)
-        for week in WIZZARD_WEEKS
+            item_name='week3',
+            should_replace=True),
+        _convert_useful_dict_to_garbage_boto3(
+            {house: '0' for house in WIZZARD_HOUSES},
+            item_name='week4',
+            should_replace=True),
     ]
     print 'ITEMS', items
 

@@ -35,7 +35,8 @@ class PointsFormComponent extends React.Component {
     this.state = {
       note: 'Note for the award...',
       pointsToAlter: 0,
-      houseToAlter: 'gryffindor', 
+      houseToAlter: 'gryffindor',
+      isAwardPointsDisabled: false,
     };
   }
 
@@ -65,6 +66,11 @@ class PointsFormComponent extends React.Component {
   _onSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
+    this.setState({isAwardPointsDisabled: true});
+    this.delayPromise(2000)
+      .then(()=> {
+        this.setState({isAwardPointsDisabled: false});
+      });
 
     const api = new API();
     api.addPoints(
@@ -76,6 +82,12 @@ class PointsFormComponent extends React.Component {
        })
   }
 
+  // TODO put this in utils
+  delayPromise(delayMilliSeconds) {
+    return new Promise(function(resolve) {
+      setTimeout(resolve, delayMilliSeconds);
+    });
+  }
 
   render () {
     return (
@@ -123,7 +135,7 @@ class PointsFormComponent extends React.Component {
             />
           </div>
           <br/>
-          <button className='point-form__submit' type="submit">Award Points</button>
+          <button className='point-form__submit' type="submit" disabled={this.state.isAwardPointsDisabled}>Award Points</button>
         </form>
       </div>
     )
