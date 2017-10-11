@@ -31,15 +31,15 @@ import Points17 from '../../assets/sounds/points_17.mp3';
 import Points18 from '../../assets/sounds/points_18.mp3';
 import Points19 from '../../assets/sounds/points_19.mp3';
 import Points20 from '../../assets/sounds/points_20.mp3';
-
-// import Points30 from '../../assets/sounds/points_30.mp3';
-// import Points40 from '../../assets/sounds/points_40.mp3';
-// import Points50 from '../../assets/sounds/points_50.mp3';
-// import Points60 from '../../assets/sounds/points_60.mp3';
-// import Points70 from '../../assets/sounds/points_70.mp3';
-// import Points80 from '../../assets/sounds/points_80.mp3';
-// import Points90 from '../../assets/sounds/points_90.mp3';
-// import Points100 from '../../assets/sounds/points_100.mp3';
+import Points30 from '../../assets/sounds/points_30.mp3';
+import Points40 from '../../assets/sounds/points_40.mp3';
+import Points50 from '../../assets/sounds/points_50.mp3';
+import Points60 from '../../assets/sounds/points_60.mp3';
+import Points70 from '../../assets/sounds/points_70.mp3';
+import Points80 from '../../assets/sounds/points_80.mp3';
+import Points90 from '../../assets/sounds/points_90.mp3';
+import Points100 from '../../assets/sounds/points_100.mp3';
+import PointsHundred from '../../assets/sounds/points_hundred.mp3';
 
 import Meow from '../../assets/sounds/meow.mp3';
 
@@ -71,22 +71,15 @@ const POINTS_SOUNDS = {
   18: Points18,
   19: Points19,
   20: Points20,
-  // 30: Points30,
-  // 40: Points40,
-  // 50: Points50,
-  // 60: Points60,
-  // 70: Points70,
-  // 80: Points80,
-  // 90: Points90,
-  // 100: Points100,
-  30: Meow,
-  40: Meow,
-  50: Meow,
-  60: Meow,
-  70: Meow,
-  80: Meow,
-  90: Meow,
-  100: Meow,
+  30: Points30,
+  40: Points40,
+  50: Points50,
+  60: Points60,
+  70: Points70,
+  80: Points80,
+  90: Points90,
+  100: Points100,
+  hundred: PointsHundred,
 }
 
 class ExpectoCaponigro {
@@ -161,7 +154,7 @@ class ExpectoCaponigro {
         let digit = hundreds / 100;
         numberSoundChain = this._createChainableSound(this._getUrlForNumber(digit), digit)
           .then(()=> {
-            return this._createChainableSound(this._getUrlForNumber(100), 100);
+            return this._createChainableSound(POINTS_SOUNDS.hundred, 'hundred');
           });
       }
 
