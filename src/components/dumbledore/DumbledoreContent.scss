@@ -1,3 +1,25 @@
+$light-grey: #797270;
+$dark-grey: #453F3C;
+$white: #FFFFFF;
+
+$gryffindor-red: #7f0909;
+$gryffindor-gold: #FFC500;
+$hufflepuff-yellow: #EEE117;
+$hufflepuff-black: #000000;
+$ravenclaw-blue: #000A90;
+$ravenclaw-bronze: #946b2d;
+$slytherin-green: #0D6217;
+$slytherin-grey: #AAAAAA;
+
+
+$active-color: $light-grey;
+
+$form-field-height: 40px;
+$button-height: $form-field-height;
+$button-width: $button-height;
+
+$font-bold: 700;
+
 .dumbledore-content__component {
     flex: 1 0 auto;
     font-size: 40px;
@@ -6,6 +28,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
+    text-shadow: 2px 2px 7px $dark-grey, 2px 2px 3px $light-grey;
 
     span {
         max-width: 50%;
@@ -28,4 +52,16 @@
             outline-color: #1e1e1e;
         }
     }
+
+    .dumbledore-content--dashboard-button {
+        background-image: url("../../assets/potter_teacher_wizard.png");
+        background-size: 50px 50px;
+        height: 50px;
+        width: 50px;
+    
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
 }
+@import './PointForm';
