@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "bootstrap": "^3.3.7",
     "bootstrap-sass": "^3.3.7",
     "faye": "^1.2.4",
